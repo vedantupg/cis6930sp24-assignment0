@@ -2,10 +2,9 @@
 
 Name: VEDANT UPGANLAWAR
 
-# Project Description 
+## Project Description 
 
-
-# How to install
+## How to install
 pipenv install
 
 ## How to run
