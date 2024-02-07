@@ -184,11 +184,12 @@ if __name__ == '__main__':
             rows = text.split("\n")
             if i == 0:
                 rows.pop(0)
+                rows.pop(len(rows)-1)
                 rows[len(rows)-1] = rows[len(rows) -
                                          1].replace("NORMAN POLICE DEPARTMENT", "")
             for row in rows:
                 populatedb(row)
 
-        # fetch_db()
         # delete_data()
+        # fetch_db()
         groupBy()
