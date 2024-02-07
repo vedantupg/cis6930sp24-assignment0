@@ -43,7 +43,7 @@ def populatedb(row):
         location = ""
         nature = ""
         for word in location_Nature:
-            if has_lowercase(word):
+            if has_lowercase(word) and word != "MVA" and word != "COP" and word != "EMS" and word != "DDACTS":
                 nature += word + " "
             else:
                 location += word + " "
