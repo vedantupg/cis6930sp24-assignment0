@@ -8,6 +8,7 @@ requests = "*"
 tabula = "*"
 tabula-py = "*"
 pytest = "*"
+assignment0 = {file = ".", editable = true}
 
 [dev-packages]
 

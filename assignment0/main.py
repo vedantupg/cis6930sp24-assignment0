@@ -88,24 +88,14 @@ def groupBy():
 
     connection = sqlite3.connect("resources/normanpd.db")
     cursor = connection.cursor()
-    results = cursor.execute("""SELECT nature, COUNT(*) AS count
+    cursor.execute("""SELECT nature, COUNT(*) AS count
 FROM incidents
 GROUP BY nature
 ORDER BY nature ASC;                             
  """)
 
-    rows = results.fetchall()
-
-# Loop through each row and print its values
-    for row in rows:
-        for column in row:
-            print(column, end=" | ")
-        print("")
-
-    results = cursor.execute("""SELECT COUNT(*) FROM incidents;""")
-    row = results.fetchone()  # Fetch the single row
-    count = row[0]           # Access the count value from the first element
-    print(count)
+    for row in cursor.fetchall():
+        print(*row, sep="|")
 
     connection.commit()
     connection.close()
