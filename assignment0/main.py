@@ -2,7 +2,6 @@ import argparse
 import requests
 import io
 import sqlite3
-import pandas as pd
 from pypdf import PdfReader
 
 
