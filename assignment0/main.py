@@ -182,6 +182,10 @@ if __name__ == '__main__':
             page = tables.pages[i]
             text = page.extract_text()
             rows = text.split("\n")
+            if i == 0:
+                rows.pop(0)
+                rows[len(rows)-1] = rows[len(rows) -
+                                         1].replace("NORMAN POLICE DEPARTMENT", "")
             for row in rows:
                 populatedb(row)
 
