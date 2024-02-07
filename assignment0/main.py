@@ -97,8 +97,9 @@ def populatedb(row):
         final_dict['Location'] = ' '.join(
             words).replace(string.strip(), '').strip()
 
-        cursor.execute(query, (final_dict['Date / Time'], final_dict['Incident Number'],
-                               final_dict['Location'], final_dict['Incident Type'], final_dict['Incident ORI']))
+        if final_dict['Location'] != "" or final_dict['Location'] != " ":
+            cursor.execute(query, (final_dict['Date / Time'], final_dict['Incident Number'],
+                                   final_dict['Location'], final_dict['Incident Type'], final_dict['Incident ORI']))
 
         connection.commit()  # Commit changes
     except Exception as e:
