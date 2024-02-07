@@ -95,7 +95,7 @@ def groupBy():
     cursor.execute("""SELECT nature, COUNT(*) AS count
 FROM incidents
 GROUP BY nature
-ORDER BY nature ASC;                             
+ORDER BY COUNT(*) DESC, nature ASC;                             
  """)
 
     for row in cursor.fetchall():
