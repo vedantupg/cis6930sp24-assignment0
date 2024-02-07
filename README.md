@@ -4,22 +4,14 @@ Name: VEDANT UPGANLAWAR
 
 ## Project Description
 
-Creating a Python application to extract incident data from PDF files released by the Norman, Oklahoma police department is the task at hand. The programme gathers important data, including date/time, incident number, location, type, and incident ORI, from incident summaries downloaded from a given URL. It then stores the information in a SQLite database. It also has the ability to print an overview of the different incident kinds and their corresponding counts. The project intends to demonstrate proficiency in database management, command-line parameter parsing, and data extraction. Following best practices, the code is arranged in a Python package and comes with extensive documentation in the README file.
+## How to install
 
-# How to Install:
+pipenv install
 
-1. Clone the repository on your system:
-   ```sh
-   $ git clone https://github.com/vedantupg/cis6930sp24-assignment0.git
-   $ cd cis6930sp24-assignment0
-   ```
+## How to run
 
-# How to run
-
-1. To run the program, use the following command:
-   ```sh
-   $ pipenv run python assignment0/main.py --incidents <url>
-   ```
+pipenv run ...
+![video](video)
 
 ## Functions
 
