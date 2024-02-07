@@ -187,6 +187,8 @@ if __name__ == '__main__':
                 rows.pop(len(rows)-1)
                 rows[len(rows)-1] = rows[len(rows) -
                                          1].replace("NORMAN POLICE DEPARTMENT", "")
+            elif i == pages-1:
+                rows.pop(len(rows) - 1)
             for row in rows:
                 populatedb(row)
 
