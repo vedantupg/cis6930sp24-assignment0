@@ -10,6 +10,7 @@ tabula-py = "*"
 pytest = "*"
 assignment0 = {file = ".", editable = true}
 jpype1 = "*"
+pypdf = "*"
 
 [dev-packages]
 

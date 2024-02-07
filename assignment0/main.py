@@ -1,9 +1,9 @@
 import argparse
 import requests
 import io
-import tabula
 import sqlite3
 import pandas as pd
+from pypdf import PdfReader
 
 
 def has_lowercase(text):
@@ -28,28 +28,33 @@ def create_db():
 
 
 def populatedb(row):
-    row.iloc[3] = str(row.iloc[3])
 
     connection = sqlite3.connect("resources/normanpd.db")
     cursor = connection.cursor()
     query = """INSERT INTO incidents (incident_time, incident_number, incident_location, nature, incident_ori)
                 VALUES (?, ?, ?, ?, ?)"""
 
-    if row.iloc[3] == "nan":
-        words = row[2].split(" ")
-        row.iloc[2] = ""
-        row.iloc[3] = ""
-        for word in words:
+    words = row.split(" ")
+    if (len(words) > 3):
+        date_time = words[0]+" "+words[1]
+        incidentNo = words[2]
+        incidentORI = words[-1]
+
+        location_Nature = words[3:-1]
+        location = ""
+        nature = ""
+        for word in location_Nature:
             if has_lowercase(word):
-                row.iloc[3] = row.iloc[3] + word + " "
+                nature += word + " "
             else:
-                row.iloc[2] = row.iloc[2] + word + " "
+                location += word + " "
 
-    row.iloc[3] = row.iloc[3].rstrip()
+        location = location.rstrip()
+        nature = nature.rstrip()
 
-    if not pd.isna(row.iloc[0]):
         cursor.execute(
-            query, (row.iloc[0], row.iloc[1], row.iloc[2], row.iloc[3], row.iloc[4]))
+            query, (date_time, incidentNo, location, nature, incidentORI))
+
     connection.commit()
     connection.close()
 
@@ -105,12 +110,10 @@ def extract_incidents(url):
     response = requests.get(url)
     response.raise_for_status()
 
-    with io.BytesIO(response.content) as pdf_file:  # Create a file-like object
+    remote_file = io.BytesIO(response.content)
+    tables = PdfReader(remote_file)
 
-        tables = tabula.read_pdf(
-            pdf_file, guess=False, pages="all", stream=True, encoding="utf-8")
-
-        return tables  # list of dataframes
+    return tables  # list of dataframes
 
 
 if __name__ == '__main__':
@@ -121,14 +124,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.incidents:
 
-        create_db()
+        # create_db()
         # Iterating the tables extracted and populating the data
         #
         tables = extract_incidents(args.incidents)
-        for table_index, table in enumerate(tables):
-            for row_index, row in table.iterrows():
+        pages = len(tables.pages)
+        for i in range(0, pages):
+            page = tables.pages[i]
+            text = page.extract_text()
+            rows = text.split("\n")
+            for row in rows:
                 populatedb(row)
+                # print(row)
 
-        # fetch_db()
-
+        fetch_db()
+        # delete_data()
         groupBy()
