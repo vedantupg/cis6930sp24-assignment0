@@ -26,36 +26,86 @@ def create_db():
     connection.close()
 
 
+# def populatedb(row):
+
+#     connection = sqlite3.connect("resources/normanpd.db")
+#     cursor = connection.cursor()
+#     query = """INSERT INTO incidents (incident_time, incident_number, incident_location, nature, incident_ori)
+#                 VALUES (?, ?, ?, ?, ?)"""
+
+#     words = row.split(" ")
+#     if (len(words) > 3):
+#         date_time = words[0]+" "+words[1]
+#         incidentNo = words[2]
+#         incidentORI = words[-1]
+
+#         location_Nature = words[3:-1]
+#         location = ""
+#         nature = ""
+#         for word in location_Nature:
+#             if has_lowercase(word) or word == "MVA" or word == "COP" or word == "EMS" or word == "DDACTS" or word == "/" or word == "911":
+#                 nature += word + " "
+#             else:
+#                 location += word + " "
+
+#         location = location.rstrip()
+#         nature = nature.rstrip()
+
+#         cursor.execute(
+#             query, (date_time, incidentNo, location, nature, incidentORI))
+
+#     connection.commit()
+#     connection.close()
+
 def populatedb(row):
 
     connection = sqlite3.connect("resources/normanpd.db")
     cursor = connection.cursor()
     query = """INSERT INTO incidents (incident_time, incident_number, incident_location, nature, incident_ori)
                 VALUES (?, ?, ?, ?, ?)"""
+    string = ''
+    try:
+        words = row.split(' ')
+        final_dict = {'Date / Time': words[0] + ' ' + words[1],
+                      'Incident Number': words[2],
+                      'Incident ORI': words[-1],
+                      'Location': '',
+                      'Incident Type': ''}
 
-    words = row.split(" ")
-    if (len(words) > 3):
-        date_time = words[0]+" "+words[1]
-        incidentNo = words[2]
-        incidentORI = words[-1]
+        words.remove(words[0])
+        words.remove(words[0])
+        words.remove(words[0])
+        words.remove(words[-1])
 
-        location_Nature = words[3:-1]
-        location = ""
-        nature = ""
-        for word in location_Nature:
-            if has_lowercase(word) or word == "MVA" or word == "COP" or word == "EMS" or word == "DDACTS" or word == "/" or word == "911":
-                nature += word + " "
-            else:
-                location += word + " "
+        for j in range(0, len(words)):
+            if any(c.islower() for c in words[j]):
+                for a in range(j, len(words)):
+                    if words[a-1] == '911':
+                        string += words[a-1] + ' '
+                    string += words[a] + ' '
+                break
+            elif words[j] == 'COP':
+                string += words[j] + ' '
+            elif words[j] == 'EMS':
+                string += words[j] + ' '
+            elif words[j] == 'DDACTS':
+                string += words[j] + ' '
+            elif words[j] == 'MVA':
+                string += words[j] + ' '
 
-        location = location.rstrip()
-        nature = nature.rstrip()
+        final_dict['Incident Type'] = string.strip()
+        final_dict['Location'] = ' '.join(
+            words).replace(string.strip(), '').strip()
 
-        cursor.execute(
-            query, (date_time, incidentNo, location, nature, incidentORI))
+        cursor.execute(query, (final_dict['Date / Time'], final_dict['Incident Number'],
+                               final_dict['Location'], final_dict['Incident Type'], final_dict['Incident ORI']))
 
-    connection.commit()
-    connection.close()
+        connection.commit()  # Commit changes
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        cursor.close()      # Close cursor
+        connection.close()   # Close connection
 
 
 def fetch_db():
@@ -134,7 +184,6 @@ if __name__ == '__main__':
             rows = text.split("\n")
             for row in rows:
                 populatedb(row)
-                # print(row)
 
         # fetch_db()
         # delete_data()
