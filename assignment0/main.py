@@ -131,6 +131,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.incidents:
 
+        create_db()
         # Iterating the tables extracted and populating the data
         #
         tables = extract_incidents(args.incidents)
@@ -138,10 +139,6 @@ if __name__ == '__main__':
             for row_index, row in table.iterrows():
                 populatedb(row)
 
-        # create_db()
-
-        # delete_data()
-
-        fetch_db()
+        # fetch_db()
 
         groupBy()
